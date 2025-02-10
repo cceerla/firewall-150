@@ -102,7 +102,7 @@ class Firewall (object):
         """
 
         packet = event.parsed
-        if not packed.parsed:
+        if not packet.parsed:
             log.warning("Incomplete Packet: Skipping this")
             return
         packet_in = event.ofp
