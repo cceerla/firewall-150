@@ -16,15 +16,15 @@ class MyTopology(Topo):
 
         # Set Up Topology Here
         switch1 = self.addSwitch('switch1') ## Adds a Switch
-        ipad = self.addHost('iPad',ip='10.1.1.1')
+        ipad = self.addHost('ipad',ip='10.1.1.1')
         self.addLink(switch1, ipad, delay='20ms')
-        laptop = self.addHost('Laptop',ip='10.1.1.2')
+        laptop = self.addHost('laptop',ip='10.1.1.2')
         self.addLink(switch1, laptop, delay='20ms')
         switch2 = self.addSwitch('switch2') ## Adds a Switch
         self.addLink(switch1, switch2, delay='20ms')
-        lights = self.addHost('Lights',ip='10.1.20.1')
+        lights = self.addHost('lights',ip='10.1.20.1')
         self.addLink(switch2, lights, delay='20ms')
-        heater = self.addHost('Heater',ip='10.1.20.2')
+        heater = self.addHost('heater',ip='10.1.20.2')
         self.addLink(switch2, heater, delay='20ms')
  
 if __name__ == '__main__':
