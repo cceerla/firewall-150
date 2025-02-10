@@ -20,8 +20,8 @@ class MyTopology(Topo):
         self.addLink(switch1, ipad, delay='20ms')
         laptop = self.addHost('laptop',ip='10.1.1.2')
         self.addLink(switch1, laptop, delay='20ms')
-        webserver = self.addHost('webserver', ip='10.1.1.3')
-        self.addlink(switch1, webserver, delay='20ms')
+        #webserver = self.addHost('webserver', ip='10.1.1.3')
+        #self.addlink(switch1, webserver, delay='20ms')
         switch2 = self.addSwitch('switch2') ## Adds a Switch
         self.addLink(switch1, switch2, delay='20ms')
         lights = self.addHost('lights',ip='10.1.20.1')
