@@ -31,6 +31,9 @@ import time
 
 log = core.getLogger()
 
+_timeout_idle = 60
+_timeout_hard = 60 * 5
+
 # We don't want to flood immediately when a switch connects.
 # Can be overriden on commandline.
 _flood_delay = 0
@@ -56,6 +59,24 @@ class Firewall (object):
     
     def do_firewall(self, packet, packet_in):
         # execute this in handle_pktIn
+        # pkt is like event in l2_learning
+        # pkt_in is the output (?)
+
+
+        def accept(packet, packet_in):
+            # Write code for an accept function
+            msg = of.ofp_flow_mod()
+            msg.data = packet_in
+            msg.match = of.ofp_match.from_packet(packet)
+            msg.idle_timeout = _timeout_idle
+            msg.hard_timeout = _timeout_hard
+            # this makes it put the packet into a port
+            msg.actions.append(of.ofp_action_output(port=of.OFPP_NORMAL))
+            msg.buffer_id = packet_in.buffer_id
+            self.connection.send(msg)
+            
+            print("Packet Accepted - Flow Table Installed on Switches")
+         
         def drop(packet, packet_in):
             # we do not have a duration because the
             #   idle/hard timeout is hardcoded
@@ -63,8 +84,8 @@ class Firewall (object):
             if event.ofp.buffer_id is not None:
                 msg = of.ofp_packet_out()
                 msg.match = of.ofp_match.from_packet(packet.parsed)
-                msg.idle_timeout = timeout_idle
-                msg.hard_timeout = timeout_hard
+                msg.idle_timeout = _timeout_idle
+                msg.hard_timeout = _timeout_hard
                 msg.buffer_id = packet.ofp.buffer_id
                 msg.in_port = packet.port
                 self.connection.send(msg)
