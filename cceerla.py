@@ -92,7 +92,7 @@ class Firewall (object):
             print("Packet Dropped - Flow Table Installed on Switches")
         log.warning("Beginning firewall rules...")
         
-        accept(packet, packet_in)
+        drop(packet, packet_in)
         
         return
 
