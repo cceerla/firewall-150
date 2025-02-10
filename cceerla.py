@@ -81,7 +81,7 @@ class Firewall (object):
             # we do not have a duration because the
             #   idle/hard timeout is hardcoded
             # this is stolen wholesale from l2_learning.py 
-            if event.ofp.buffer_id is not None:
+            if packet_in.buffer_id is not None:
                 msg = of.ofp_packet_out()
                 msg.match = of.ofp_match.from_packet(packet.parsed)
                 msg.idle_timeout = _timeout_idle
