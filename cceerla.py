@@ -80,7 +80,7 @@ class Firewall (object):
             msg.buffer_id = packet_in.buffer_id
             self.connection.send(msg)
             print("ACCEPT " + _pktNum)
-            _pktNum++
+            _pktNum += 1
          
         def drop(packet, packet_in):
             # we do not have a duration because the
@@ -95,7 +95,7 @@ class Firewall (object):
                 msg.in_port = packet.port
                 self.connection.send(msg)
             print("DROP   " + _pktNum)
-            _pktNum++
+            _pktNum += 1
 
         def handleServerTraffic(packet, packet_in):
             print("SERVER")
