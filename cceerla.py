@@ -101,6 +101,7 @@ class Firewall (object):
             print("SERVER")
             if (time.time() - lastServerTime < _ddos_span):
                 # two tcp requests in too quick of succession
+                print("Too fast!")
             # get the time of access
             lastServerTime = time.time()
 
