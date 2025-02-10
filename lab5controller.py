@@ -30,14 +30,24 @@ class Firewall (object):
     def do_firewall (self, packet, packet_in):
         # The code in here will be executed for every packet
        
+        # pkt is like event in l2_learning
+        # pkt_in is the output (?)
+
         timeout_idle = 60
         timeout_hard = 60 * 5
-
-        def accept():
+        
+        def accept(packet, packet_in):
             # Write code for an accept function
-            #important to include:
-            # that makes it put the packet into a port...
-            # msg.actions.append(of.ofp_action_output(port=of.OFPP_NORMAL))
+            msg = of.ofp_flow_mod()
+            msg.data = packet_in
+            msg.match = of.ofp_match.from_packet(packet)
+            msg.idle_timeout = timeout_idle
+            msg.hard_timeout = timeout_hard
+            # this makes it put the packet into a port
+            msg.actions.append(of.ofp_action_output(port=of.OFPP_NORMAL))
+            msg.buffer_id = packet_in.buffer_id
+            self.connection.send(msg)
+            
             print("Packet Accepted - Flow Table Installed on Switches")
             
         def drop(packet):
@@ -46,11 +56,11 @@ class Firewall (object):
             # this is stolen wholesale from l2_learning.py 
             if event.ofp.buffer_id is not None:
                 msg = of.ofp_packet_out()
-                msg.match = of.ofp_match.from_packet(packet)
+                msg.match = of.ofp_match.from_packet(packet.parsed)
                 msg.idle_timeout = timeout_idle
                 msg.hard_timeout = timeout_hard
-                msg.buffer_id = event.ofp.buffer_id
-                msg.in_port = event.port
+                msg.buffer_id = packet.ofp.buffer_id
+                msg.in_port = packet.port
                 self.connection.send(msg)
             print("Packet Dropped - Flow Table Installed on Switches")
             
@@ -72,11 +82,9 @@ class Firewall (object):
         #
         # To drop packets, simply omit the action .
         
-        # SETUP -------------------------------------------
-        # set timeouts
-        
         # firewall rules ----------------------------------
         
+        accept()
         
     def _handle_PacketIn (self, event):
         """

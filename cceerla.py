@@ -33,6 +33,11 @@ log = core.getLogger()
 
 _timeout_idle = 60
 _timeout_hard = 60 * 5
+_timeout_ddos = 10 # the amount of time that the ddos attacker must wait before getting to send another pkt
+_ddos_span = 10    # min time between pkts to not trip ddos detector
+lastServerSrc = "0.0.0.0"
+lastServerTime = 0
+_pktNum = 0
 
 # We don't want to flood immediately when a switch connects.
 # Can be overriden on commandline.
@@ -74,8 +79,8 @@ class Firewall (object):
             msg.actions.append(of.ofp_action_output(port=of.OFPP_NORMAL))
             msg.buffer_id = packet_in.buffer_id
             self.connection.send(msg)
-            
-            print("Packet Accepted - Flow Table Installed on Switches")
+            print("ACCEPT " + _pktNum)
+            _pktNum++
          
         def drop(packet, packet_in):
             # we do not have a duration because the
@@ -89,13 +94,21 @@ class Firewall (object):
                 msg.buffer_id = packet.ofp.buffer_id
                 msg.in_port = packet.port
                 self.connection.send(msg)
-            print("Packet Dropped - Flow Table Installed on Switches")
-        log.warning("Beginning firewall rules...")
-        
+            print("DROP   " + _pktNum)
+            _pktNum++
+
+        def handleServerTraffic(packet, packet_in):
+            print("SERVER")
+            if (time.time() - lastServerTime < _ddos_span):
+                # two tcp requests in too quick of succession
+            # get the time of access
+            lastServerTime = time.time()
+
         ip_header = packet.find('ipv4')
         
         iPadAddr =   "10.1.1.1"
         laptopAddr = "10.1.1.2"
+        serverAddr = "10.1.1.3"
         lightsAddr = "10.1.20.1"
         heaterAddr = "10.1.20.2"
         
@@ -106,7 +119,10 @@ class Firewall (object):
         # allow ICMP any/any
         elif packet.find('icmp') is not None:
             accept(packet, packet_in)
-        
+       
+        elif ip_header.dstip == serverAddr and packet.find('tcp') is not None:
+            handleServerTraffic(packet, packet_in)
+
         # allow TCP laptop/iPad
         elif ip_header.srcip == laptopAddr and ip_header.dstip == iPadAddr and packet.find('tcp') is not None:
             accept(packet, packet_in)
