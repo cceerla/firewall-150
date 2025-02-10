@@ -79,7 +79,7 @@ class Firewall (object):
             msg.actions.append(of.ofp_action_output(port=of.OFPP_NORMAL))
             msg.buffer_id = packet_in.buffer_id
             self.connection.send(msg)
-            print("ACCEPT " + _pktNum)
+            print("ACCEPT ", _pktNum)
             _pktNum += 1
          
         def drop(packet, packet_in):
@@ -94,7 +94,7 @@ class Firewall (object):
                 msg.buffer_id = packet.ofp.buffer_id
                 msg.in_port = packet.port
                 self.connection.send(msg)
-            print("DROP   " + _pktNum)
+            print("DROP   ", _pktNum)
             _pktNum += 1
 
         def handleServerTraffic(packet, packet_in):
