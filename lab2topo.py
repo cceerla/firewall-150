@@ -4,6 +4,8 @@ from mininet.topo import Topo
 from mininet.net import Mininet
 from mininet.cli import CLI
 from mininet.link import TCLink ##Think about what this does, dig around the API doc and discuss in section!
+from mininet.node import RemoteController
+
 
 class MyTopology(Topo):
     """
@@ -31,9 +33,10 @@ if __name__ == '__main__':
     what it will do
     """
 
-    topo = MyTopology()   		 ## Creates the topology
-    net = Mininet( topo=topo, link=TCLink )   	 ## Loads the topology, invokes TCLink 
-    net.start()                      ## Starts Mininet
+    topo = MyTopology() ## Creates the topology
+    c0 = RemoteController(name='c0', controller=RemoteController, ip='127.0.0.1', port=6633) #Creates a remote controller
+    net = Mininet( topo=topo, controller=c0, link=TCLink ) ## Loads the topology, invokes TCLink 
+    net.start() ## Starts Mininet
 
     # Commands here will run on the simulated topology
     CLI(net)
