@@ -92,6 +92,8 @@ class Firewall (object):
             print("Packet Dropped - Flow Table Installed on Switches")
         log.warning("Beginning firewall rules...")
         
+        accept(packet, packet_in)
+        
         return
 
     def _handle_PacketIn (self, event):
@@ -105,7 +107,7 @@ class Firewall (object):
             return
         packet_in = event.ofp
         
-        self.do_firewall()
+        self.do_firewall(packet, packet_in)
         """
         self.macToPort[packet.src] = event.port # 1
 
