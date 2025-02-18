@@ -23,7 +23,7 @@ class MyTopology(Topo):
 
     # red
     s2 = self.addSwitch('s2')
-    self.addLink(s2, s1, port1=100, port2=2)
+    self.addLink(s2, s1, port1=6, port2=2)
     facultyWS = self.addHost('facultyWS', ip='169.233.3.10/24', defaultRoute="facultyWS-eth2")
     self.addLink(facultyWS, s2, port1=2, port2=9)
     printer = self.addHost('printer', ip='169.233.3.20/24', defaultRoute="printer-eth2")
@@ -45,11 +45,11 @@ class MyTopology(Topo):
     s4 = self.addSwitch('s4')
     self.addLink(s1, s4, port1=4, port2=6)
     itBackup = self.addHost('itBackup', ip='169.233.1.30/24', defaultRoute="itBackup-eth4")
-    self.addLink(itBackup, s4, port1=4, port2=9)
+    self.addLink(itBackup, s4, port1=4, port2=7)
     itWS = self.addHost('itWS', ip='169.233.1.10/24', defaultRoute="itWS-eth4")
-    self.addLink(itWS, s4, port1=4, port2=8)
+    self.addLink(itWS, s4, port1=4, port2=9)
     itPC = self.addHost('itPC', ip='169.233.1.20/24', defaultRoute="itPC-eth4")
-    self.addLink(itPC, s4, port1=4, port2=7)
+    self.addLink(itPC, s4, port1=4, port2=8)
 
     # green
     s3 = self.addSwitch('s3')
@@ -60,6 +60,12 @@ class MyTopology(Topo):
     self.addLink(studentPC2, s3, port1=5, port2=8)
     labWS = self.addHost('labWS', ip='169.233.4.100/24', defaultRoute="labWS-eth5")
     self.addLink(labWS, s3, port1=5, port2=7)
+
+    # discord server
+    s6 = self.addSwitch('s6')
+    self.addLink(s1, s6, port1=100, port2=6)
+    dServer = self.addHost('dServer', ip='13.61.7.1/24', defaultRoute="dServer-eth9")
+    self.addLink(dServer, s6, port1=100, port2=9)
     
 if __name__ == '__main__':
   #This part of the script is run when the script is executed
